@@ -33,7 +33,7 @@ public class HomeActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(HomeActivity.this, LeaguesActivity.class));
+                startActivity(new Intent(HomeActivity.this, CompetitionsActivity.class));
             }
         });
 

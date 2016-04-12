@@ -3,7 +3,6 @@ package nl.teamtwo.footballstream;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -17,11 +16,12 @@ import java.net.URL;
  */
 public class FootballStreamTask extends AsyncTask<Void, Void , JSONObject> {
 
-    private LeaguesActivity la;
+    private DataInterface ca;
+
     private String urlString = "http://footballstream-api.jordibeen.nl/api/v1";
 
-    public FootballStreamTask (LeaguesActivity la, String url) {
-        this.la = la;
+    public FootballStreamTask (DataInterface ca, String url) {
+        this.ca = ca;
         this.urlString += url;
     }
 
@@ -73,6 +73,8 @@ public class FootballStreamTask extends AsyncTask<Void, Void , JSONObject> {
     @Override
     protected void onPostExecute(JSONObject data) {
         super.onPostExecute(data);
-        la.updateLeagues(data);
+        ca.notify(data);
+
     }
+
 }

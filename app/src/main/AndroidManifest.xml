@@ -21,7 +21,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".LeaguesActivity"
+            android:name=".CompetitionsActivity"
             android:label="@string/title_activity_leagues"
             android:theme="@style/AppTheme.NoActionBar"
             ></activity>

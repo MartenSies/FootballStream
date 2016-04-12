@@ -156,6 +156,7 @@ public class CompetitionsActivity extends AppCompatActivity implements DataInter
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
+            teams.clear();
             try {
                 teamsArray = new JSONArray(getArguments().getString("teams"));
                 for(int i = 0; i < teamsArray.length(); i++) {
@@ -163,21 +164,15 @@ public class CompetitionsActivity extends AppCompatActivity implements DataInter
 
                     String id = team.get("id").toString();
                     String name = team.get("name").toString();
+                    int logo = getResources().getIdentifier(name.replaceAll(" ", "_").replaceAll("'", "").toLowerCase(), "drawable", getActivity().getPackageName());
 
-                    teams.add(new Team(name, "Extra info", R.drawable.feyenoord));
+                    teams.add(new Team(name, logo));
                     adapter.notifyItemInserted(teams.size()-1);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
             View rootView = inflater.inflate(R.layout.fragment_competitions, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(this.teamsArray.toString());
-
-
-
-            Log.d("teams", teamsArray.toString());
-
             RecyclerView rv = (RecyclerView)rootView.findViewById(R.id.rv);
             rv.setHasFixedSize(true);
 

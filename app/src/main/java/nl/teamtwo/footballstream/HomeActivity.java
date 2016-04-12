@@ -53,16 +53,12 @@ public class HomeActivity extends AppCompatActivity
         rv.setLayoutManager(llm);
 
         List<Team> teams = new ArrayList<>();
-        teams.add(new Team("Ajax", "Amsterdam", R.drawable.ajax));
-        teams.add(new Team("Feyenoord", "Rotterdam", R.drawable.feyenoord));
-        teams.add(new Team("ADO Den Haag", "Den Haag", R.drawable.ado_den_haag));
-        teams.add(new Team("Vitesse", "Arnhem", R.drawable.vitesse));
-        teams.add(new Team("PSV", "Eindhoven", R.drawable.psv));
+        teams.add(new Team("Ajax", R.drawable.ajax));
+        teams.add(new Team("Feyenoord", R.drawable.feyenoord));
+        teams.add(new Team("Vitesse", R.drawable.vitesse));
 
         RVAdapter adapter = new RVAdapter(teams);
         rv.setAdapter(adapter);
-
-        Log.v("test", Integer.toString(adapter.getItemCount()));
 
     }
 

@@ -25,14 +25,12 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder>{
     public static class PersonViewHolder extends RecyclerView.ViewHolder {
         CardView cv;
         TextView teamName;
-        TextView teamLocation;
         ImageView teamIcon;
 
         PersonViewHolder(View itemView) {
             super(itemView);
             cv = (CardView)itemView.findViewById(R.id.cv);
             teamName = (TextView)itemView.findViewById(R.id.team_name);
-            teamLocation = (TextView)itemView.findViewById(R.id.team_location);
             teamIcon = (ImageView)itemView.findViewById(R.id.team_icon);
         }
     }
@@ -52,7 +50,6 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder>{
     @Override
     public void onBindViewHolder(PersonViewHolder personViewHolder, int i) {
         personViewHolder.teamName.setText(teams.get(i).name);
-        personViewHolder.teamLocation.setText(teams.get(i).location);
         personViewHolder.teamIcon.setImageResource(teams.get(i).iconId);
     }
 

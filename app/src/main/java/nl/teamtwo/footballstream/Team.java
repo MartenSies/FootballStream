@@ -5,12 +5,10 @@ package nl.teamtwo.footballstream;
  */
 class Team {
     String name;
-    String location;
     int iconId;
 
-    Team(String name, String location, int iconId) {
+    Team(String name, int iconId) {
         this.name = name;
-        this.location = location;
         this.iconId = iconId;
     }
 }

@@ -126,24 +126,38 @@ public class CompetitionsActivity extends AppCompatActivity implements DataInter
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class PlaceholderFragment extends Fragment implements DataInterface {
+    public static class PlaceholderFragment extends Fragment {
         /**
          * The fragment argument representing the section number for this
          * fragment.
          */
         private static final String ARG_SECTION_NUMBER = "section_number";
+        private JSONArray teamsArray;
         private List<Team> teams = new ArrayList<>();
         private RVAdapter adapter = new RVAdapter(teams);
 
         public PlaceholderFragment() {
         }
 
+
+        /**
+         * Returns a new instance of this fragment for the given section
+         * number.
+         */
+        public static PlaceholderFragment newInstance(int sectionNumber, JSONArray teams) {
+            PlaceholderFragment fragment = new PlaceholderFragment();
+            Bundle args = new Bundle();
+            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+            args.putString("teams",teams.toString());
+            fragment.setArguments(args);
+            return fragment;
+        }
+
         @Override
-        public void notify(JSONObject data) {
-            Log.d("teams", data.toString());
-            teams.clear();
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
             try {
-                JSONArray teamsArray = data.getJSONArray("teams");
+                teamsArray = new JSONArray(getArguments().getString("teams"));
                 for(int i = 0; i < teamsArray.length(); i++) {
                     JSONObject team = teamsArray.getJSONObject(i);
 
@@ -152,33 +166,17 @@ public class CompetitionsActivity extends AppCompatActivity implements DataInter
 
                     teams.add(new Team(name, "Extra info", R.drawable.feyenoord));
                     adapter.notifyItemInserted(teams.size()-1);
-
-                    Log.d("team", id + " " + name);
                 }
             } catch (JSONException e) {
-
+                e.printStackTrace();
             }
-        }
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            new FootballStreamTask(fragment, "/teams?competition_id=" + sectionNumber).execute();
-            return fragment;
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_competitions, container, false);
             TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
+            textView.setText(this.teamsArray.toString());
+
+
+
+            Log.d("teams", teamsArray.toString());
 
             RecyclerView rv = (RecyclerView)rootView.findViewById(R.id.rv);
             rv.setHasFixedSize(true);
@@ -186,10 +184,7 @@ public class CompetitionsActivity extends AppCompatActivity implements DataInter
             LinearLayoutManager llm = new LinearLayoutManager(getActivity());
             rv.setLayoutManager(llm);
 
-            Log.d("teams", teams.toString());
-
             rv.setAdapter(adapter);
-
 
             return rootView;
         }
@@ -211,14 +206,29 @@ public class CompetitionsActivity extends AppCompatActivity implements DataInter
         public SectionsPagerAdapter(FragmentManager fm, int count) {
             super(fm);
             this.count = count;
+            createFragments();
+        }
+
+        public void createFragments() {
+            try {
+                JSONArray competitionsArray = competitions.getJSONArray("competitions");
+                for(int i = 0; i < competitionsArray.length(); i++) {
+                    JSONObject competition = competitionsArray.getJSONObject(i);
+                    JSONArray teams = competition.getJSONArray("teams");
+                    Fragment fragment = PlaceholderFragment.newInstance(i + 1, teams);
+                    fragments.add(fragment);
+                }
+            } catch (JSONException e) {
+
+            }
+
         }
 
         @Override
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
-            Log.d("test", competitions.toString());
-            return PlaceholderFragment.newInstance(position + 1);
+            return fragments.get(position);
         }
 
         @Override

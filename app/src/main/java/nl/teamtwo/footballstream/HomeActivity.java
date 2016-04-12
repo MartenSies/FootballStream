@@ -3,7 +3,6 @@ package nl.teamtwo.footballstream;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -34,7 +33,7 @@ public class HomeActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(HomeActivity.this, Leagues.class));
+                startActivity(new Intent(HomeActivity.this, LeaguesActivity.class));
             }
         });
 
@@ -55,7 +54,7 @@ public class HomeActivity extends AppCompatActivity
 
         List<Team> teams = new ArrayList<>();
         teams.add(new Team("Ajax", "Amsterdam", R.drawable.ajax));
-        teams.add(new Team("Feynoord", "Rotterdam", R.drawable.feyenoord));
+        teams.add(new Team("Feyenoord", "Rotterdam", R.drawable.feyenoord));
         teams.add(new Team("ADO Den Haag", "Den Haag", R.drawable.ado_den_haag));
         teams.add(new Team("Vitesse", "Arnhem", R.drawable.vitesse));
         teams.add(new Team("PSV", "Eindhoven", R.drawable.psv));

@@ -1,12 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<items version="2" >
-
-    <item
-        jar="/Users/marten/School/Periode3/InnovativeTechnology/FootballStream/app/build/intermediates/incremental-classes/debug/instant-run-bootstrap.jar"
-        jumboMode="true"
-        revision="23.0.2"
-        sha1="12452f9ba186a9d8c3782699b4f644f18080b4f5">
-        <dex dex="/Users/marten/School/Periode3/InnovativeTechnology/FootballStream/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run-bootstrap_4db283cba0722442dad467702396e4344a3a5998/classes.dex" />
-    </item>
-
-</items>
+<items version="2" />

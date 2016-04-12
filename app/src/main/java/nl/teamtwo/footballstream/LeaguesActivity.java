@@ -22,7 +22,9 @@ import android.view.ViewGroup;
 
 import android.widget.TextView;
 
-public class Leagues extends AppCompatActivity {
+import org.json.JSONObject;
+
+public class LeaguesActivity extends AppCompatActivity {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -50,6 +52,9 @@ public class Leagues extends AppCompatActivity {
         final ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
 
+        //Get football leagues
+        updateFootballData();
+
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -59,7 +64,7 @@ public class Leagues extends AppCompatActivity {
         tabLayout.addTab(tabLayout.newTab().setText("English Premier League"));
         tabLayout.addTab(tabLayout.newTab().setText("Spanish La Liga"));
         tabLayout.addTab(tabLayout.newTab().setText("French Ligue 1"));
-        tabLayout.addTab(tabLayout.newTab().setText("Germam Bundesliga"));
+        tabLayout.addTab(tabLayout.newTab().setText("German Bundesliga"));
         tabLayout.addTab(tabLayout.newTab().setText("Italian Serie A"));
         tabLayout.addTab(tabLayout.newTab().setText("Dutch Eredivisie"));
         tabLayout.setTabGravity(TabLayout.MODE_SCROLLABLE);
@@ -69,6 +74,13 @@ public class Leagues extends AppCompatActivity {
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
     }
 
+    private void updateFootballData() {
+        new FootballStreamTask(this, "/competitions").execute();
+    }
+
+    public void updateLeagues(JSONObject data) {
+        Log.d("test", data.toString());
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

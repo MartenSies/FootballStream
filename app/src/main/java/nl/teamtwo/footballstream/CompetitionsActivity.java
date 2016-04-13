@@ -1,6 +1,7 @@
 package nl.teamtwo.footballstream;
 
 import android.content.Intent;
+import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -13,14 +14,12 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-
-import android.widget.TextView;
+import android.widget.CheckBox;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -40,7 +39,6 @@ public class CompetitionsActivity extends AppCompatActivity implements DataInter
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
-
     /**
      * The {@link ViewPager} that will host the section contents.
      */
@@ -134,7 +132,7 @@ public class CompetitionsActivity extends AppCompatActivity implements DataInter
         private static final String ARG_SECTION_NUMBER = "section_number";
         private JSONArray teamsArray;
         private List<Team> teams = new ArrayList<>();
-        private RVAdapter adapter = new RVAdapter(teams);
+        private RVAdapter adapter = new RVAdapter(teams, R.layout.team_card);
 
         public PlaceholderFragment() {
         }
@@ -162,17 +160,18 @@ public class CompetitionsActivity extends AppCompatActivity implements DataInter
                 for(int i = 0; i < teamsArray.length(); i++) {
                     JSONObject team = teamsArray.getJSONObject(i);
 
-                    String id = team.get("id").toString();
+                    int id = (Integer) team.get("id");
                     String name = team.get("name").toString();
                     int logo = getResources().getIdentifier(name.replaceAll(" ", "_").replaceAll("'", "").toLowerCase(), "drawable", getActivity().getPackageName());
 
-                    teams.add(new Team(name, logo));
+                    teams.add(new Team(name, logo, id));
                     adapter.notifyItemInserted(teams.size()-1);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
             View rootView = inflater.inflate(R.layout.fragment_competitions, container, false);
+
             RecyclerView rv = (RecyclerView)rootView.findViewById(R.id.rv);
             rv.setHasFixedSize(true);
 

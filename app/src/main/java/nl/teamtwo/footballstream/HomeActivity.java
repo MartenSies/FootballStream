@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -53,11 +52,9 @@ public class HomeActivity extends AppCompatActivity
         rv.setLayoutManager(llm);
 
         List<Team> teams = new ArrayList<>();
-        teams.add(new Team("Ajax", R.drawable.ajax));
-        teams.add(new Team("Feyenoord", R.drawable.feyenoord));
-        teams.add(new Team("Vitesse", R.drawable.vitesse));
 
-        RVAdapter adapter = new RVAdapter(teams);
+
+        RVAdapter adapter = new RVAdapter(teams, R.layout.match_card);
         rv.setAdapter(adapter);
 
     }
@@ -84,7 +81,7 @@ public class HomeActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
+        // Handle action bar team_card clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
@@ -100,7 +97,7 @@ public class HomeActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
+        // Handle navigation view team_card clicks here.
         int id = item.getItemId();
 
         if (id == R.id.nav_camera) {

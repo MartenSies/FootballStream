@@ -1,6 +1,6 @@
 package nl.teamtwo.footballstream;
 
-import android.content.Intent;
+import android.content.Context;
 import android.preference.PreferenceManager;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -20,18 +20,19 @@ import java.util.List;
 /**
  * Created by marten on 11/04/16.
  */
-public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder>{
+public class TeamAdapter extends RecyclerView.Adapter<TeamAdapter.TeamViewHolder>{
 
     List<Team> teams;
     int layout;
 
-    RVAdapter(List<Team> teams, int layout){
+    TeamAdapter(List<Team> teams, int layout){
         this.teams = teams;
         this.layout = layout;
+
     }
 
 
-    public static class PersonViewHolder extends RecyclerView.ViewHolder {
+    public static class TeamViewHolder extends RecyclerView.ViewHolder {
         CardView cv;
         TextView teamName;
         ImageView teamIcon;
@@ -39,18 +40,14 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder>{
         String savedTeams;
         List<String> savedTeamsList;
 
-        PersonViewHolder(final View itemView) {
+        TeamViewHolder(final View itemView) {
             super(itemView);
             cv = (CardView)itemView.findViewById(R.id.cv);
             teamName = (TextView)itemView.findViewById(R.id.team_name);
             teamIcon = (ImageView)itemView.findViewById(R.id.team_icon);
             teamCheckbox = (CheckBox)itemView.findViewById(R.id.checkBox);
 
-            PreferenceManager.getDefaultSharedPreferences(itemView.getContext()).edit().putString("TEAMS", "").commit();
-
-//            savedTeams  = PreferenceManager.getDefaultSharedPreferences(itemView.getContext()).getString("TEAMS", "");
-//            savedTeamsList = new ArrayList<String>(Arrays.asList(savedTeams.split(",")));
-
+//            PreferenceManager.getDefaultSharedPreferences(itemView.getContext()).edit().putString("TEAMS", "").commit();
 
             cv.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -63,26 +60,41 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder>{
                     }
 
                     if (teamCheckbox.isChecked()) {
-                        savedTeamsList.remove(teamCheckbox.getTag().toString());
+                        Log.d("test", "checked");
+                        List<String> newList = new ArrayList<String>();
+                        String idToRemove = teamCheckbox.getTag().toString();
+
+                        for (int i = 0; i < savedTeamsList.size(); i++ ) {
+                            String listId = savedTeamsList.get(i);
+                            if (!idToRemove.equals(listId)) {
+                                newList.add(listId);
+                            }
+                        }
+
+                        savedTeamsList = newList;
                         teamCheckbox.setChecked(false);
-                        Log.d("index", savedTeamsList.indexOf(teamCheckbox.getTag().toString()));
                         Log.d("saved_teams", savedTeamsList.toString());
                     } else {
                         savedTeamsList.add(teamCheckbox.getTag().toString());
                         teamCheckbox.setChecked(true);
                         Log.d("saved_teams", savedTeamsList.toString());
                     }
-
-                    PreferenceManager.getDefaultSharedPreferences(view.getContext()).edit().putString("TEAMS", TextUtils.join(",", savedTeamsList)).commit();
+                    savedTeams = TextUtils.join(",", savedTeamsList);
+                    Log.d("Saved_Teams", savedTeams);
+                    PreferenceManager.getDefaultSharedPreferences(view.getContext()).edit().putString("TEAMS", savedTeams).commit();
                 }
             });
         }
     }
 
+    private Context context;
+
     @Override
-    public PersonViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+    public TeamViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(layout, viewGroup, false);
-        PersonViewHolder pvh = new PersonViewHolder(v);
+        TeamViewHolder pvh = new TeamViewHolder(v);
+        context = viewGroup.getContext();
+
         return pvh;
     }
 
@@ -92,10 +104,27 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder>{
     }
 
     @Override
-    public void onBindViewHolder(PersonViewHolder personViewHolder, int i) {
-        personViewHolder.teamName.setText(teams.get(i).name);
-        personViewHolder.teamIcon.setImageResource(teams.get(i).iconId);
-        personViewHolder.teamCheckbox.setTag(teams.get(i).teamId);
+    public void onBindViewHolder(TeamViewHolder teamViewHolder, int i) {
+        teamViewHolder.teamName.setText(teams.get(i).name);
+        teamViewHolder.teamIcon.setImageResource(teams.get(i).iconId);
+        teamViewHolder.teamCheckbox.setTag(teams.get(i).teamId);
+        teamViewHolder.teamCheckbox.setChecked(false);
+
+        String savedTeams;
+        List<String> savedTeamsList;
+
+        String team_id = Integer.toString(teams.get(i).teamId);
+        savedTeams  = PreferenceManager.getDefaultSharedPreferences(context).getString("TEAMS", "");
+        if (savedTeams.length() == 0) {
+            savedTeamsList = new ArrayList<String>();
+        } else {
+            savedTeamsList = new ArrayList<String>(Arrays.asList(savedTeams.split(",")));
+        }
+
+        if (savedTeamsList.contains(team_id)) {
+            teamViewHolder.teamCheckbox.setChecked(true);
+        }
+
     }
 
     @Override

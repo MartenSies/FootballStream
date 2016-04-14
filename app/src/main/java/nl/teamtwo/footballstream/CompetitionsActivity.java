@@ -1,7 +1,6 @@
 package nl.teamtwo.footballstream;
 
 import android.content.Intent;
-import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -19,13 +18,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class CompetitionsActivity extends AppCompatActivity implements DataInterface {
@@ -43,6 +42,7 @@ public class CompetitionsActivity extends AppCompatActivity implements DataInter
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
+    private List<Integer> blackList = Arrays.asList(1005, 1007, 1198);
 
     private JSONObject competitions;
 
@@ -76,10 +76,7 @@ public class CompetitionsActivity extends AppCompatActivity implements DataInter
         try {
             JSONArray competitionArray = this.competitions.getJSONArray("competitions");
 
-            // Create the adapter that will return a fragment for each of the three
-            // primary sections of the activity.
-            mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), competitionArray.length());
-
+            int competition_count = 0;
             // Set up the ViewPager with the sections adapter.
             TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
             for(int i = 0; i < competitionArray.length(); i++) {
@@ -87,17 +84,20 @@ public class CompetitionsActivity extends AppCompatActivity implements DataInter
 
                 String region = competition.get("region").toString();
                 String name = competition.get("name").toString();
+                int id = competition.getInt("external_id");
 
-                String competitionName;
-                if (region.equals("International")) {
-                    competitionName = name;
-                } else {
-                    competitionName = region + " - " + name;
+                if (!blackList.contains(id)) {
+                    competition_count++;
+                    String competitionName = region + " - " + name;
+                    tabLayout.addTab(tabLayout.newTab().setText(competitionName));
                 }
 
-                tabLayout.addTab(tabLayout.newTab().setText(competitionName));
-
             }
+
+            // Create the adapter that will return a fragment for each of the three
+            // primary sections of the activity.
+            mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), competition_count);
+
             tabLayout.setTabGravity(TabLayout.MODE_SCROLLABLE);
 
             mViewPager = (ViewPager) findViewById(R.id.container);
@@ -132,7 +132,7 @@ public class CompetitionsActivity extends AppCompatActivity implements DataInter
         private static final String ARG_SECTION_NUMBER = "section_number";
         private JSONArray teamsArray;
         private List<Team> teams = new ArrayList<>();
-        private RVAdapter adapter = new RVAdapter(teams, R.layout.team_card);
+        private TeamAdapter adapter = new TeamAdapter(teams, R.layout.team_card);
 
         public PlaceholderFragment() {
         }
@@ -209,8 +209,12 @@ public class CompetitionsActivity extends AppCompatActivity implements DataInter
                 for(int i = 0; i < competitionsArray.length(); i++) {
                     JSONObject competition = competitionsArray.getJSONObject(i);
                     JSONArray teams = competition.getJSONArray("teams");
-                    Fragment fragment = PlaceholderFragment.newInstance(i + 1, teams);
-                    fragments.add(fragment);
+                    int id = competition.getInt("external_id");
+
+                    if (!blackList.contains(id)) {
+                        Fragment fragment = PlaceholderFragment.newInstance(i + 1, teams);
+                        fragments.add(fragment);
+                    }
                 }
             } catch (JSONException e) {
 

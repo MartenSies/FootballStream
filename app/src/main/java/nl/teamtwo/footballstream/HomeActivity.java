@@ -2,6 +2,7 @@ package nl.teamtwo.footballstream;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,12 +15,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private List<Match> matches = new ArrayList<>();
+    private MatchAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,16 +56,21 @@ public class HomeActivity extends AppCompatActivity
         LinearLayoutManager llm = new LinearLayoutManager(this);
         rv.setLayoutManager(llm);
 
-        List<Team> teams = new ArrayList<>();
-
-
-        RVAdapter adapter = new RVAdapter(teams, R.layout.match_card);
+        adapter = new MatchAdapter(matches, R.layout.match_card);
         rv.setAdapter(adapter);
 
     }
 
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        TextView text = (TextView)findViewById(R.id.text);
+        text.setText("Get matches with id: " + PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("TEAMS", ""));
 
+        matches.add(new Match(new Team("Ajax", R.drawable.ajax, 1), new Team("Feyenoord", R.drawable.feyenoord, 2), "14-05-2016", "De Kuip", "Eredivisie"));
+        adapter.notifyItemInserted(matches.size()-1);
+    }
 
     @Override
     public void onBackPressed() {

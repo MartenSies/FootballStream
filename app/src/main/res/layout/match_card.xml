@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/cv"
-    android:minHeight="200dp"
     android:layout_margin="5dp"
     >
 
@@ -20,17 +19,107 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <ImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:id="@+id/home_team_icon"
-                />
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:weightSum="2">
 
-            <TextView
-                android:layout_width="130dp"
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/home_team"
+                    android:textSize="25sp"
+                    android:text="Home Team"
+                    android:gravity="center"
+                    android:paddingLeft="5dp"
+                    android:layout_weight="1"
+                    />
+
+                <TextView
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/line"
+                    android:textSize="25sp"
+                    android:text="-"
+                    android:gravity="center"/>
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/away_team"
+                    android:textSize="25sp"
+                    android:text="Away Team"
+                    android:gravity="center"
+                    android:layout_alignParentRight="true"
+                    android:paddingRight="5dp"
+                    android:layout_weight="1"/>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/home_team"
-                android:textSize="15sp" />
+                android:weightSum="1">
+
+
+                <ImageView
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:id="@+id/home_team_icon"
+                    android:paddingLeft="20dp"
+                    />
+
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.99"></FrameLayout>
+
+
+
+                <ImageView
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:id="@+id/away_team_icon"
+                    android:paddingRight="20dp"/>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="5dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/date"
+                    android:textSize="20sp"
+                    android:text="15 - 04 - 2016"
+                    android:gravity="center"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/stadion"
+                    android:textSize="20sp"
+                    android:text="Arena"
+                    android:gravity="center"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/competition"
+                    android:textSize="20sp"
+                    android:text="Eredivisie"
+                    android:gravity="center"/>
+
+            </LinearLayout>
+
         </LinearLayout>
 
     </RelativeLayout>

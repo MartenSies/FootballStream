@@ -3,12 +3,16 @@ package nl.teamtwo.footballstream;
 /**
  * Created by marten on 14/04/16.
  */
-public class Match {
+public class Match implements Comparable<Match> {
     Team homeTeam;
     Team awayTeam;
     String date;
     String stadion;
     String competition;
+
+    public int compareTo(Match other) {
+        return date.compareTo(other.date);
+    }
 
     Match(Team homeTeam, Team awayTeam, String date, String stadion, String competition) {
         this.homeTeam = homeTeam;

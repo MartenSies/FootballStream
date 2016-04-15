@@ -12,9 +12,4 @@
     tools:context="nl.teamtwo.footballstream.HomeActivity"
     tools:showIn="@layout/app_bar_home">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/text"
-        android:text="Hello World!" />
 </RelativeLayout>

@@ -6,6 +6,8 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -17,11 +19,20 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 public class HomeActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, DataInterface {
 
     private List<Match> matches = new ArrayList<>();
     private MatchAdapter adapter;
@@ -61,15 +72,74 @@ public class HomeActivity extends AppCompatActivity
 
     }
 
+    @Override
+    public void notify(JSONObject data) {
+
+        try {
+            JSONArray matchesArray = data.getJSONArray("matches");
+            List<Integer> matchIdList = new ArrayList<Integer>();
+            for (int i = 0; i < matchesArray.length(); i++) {
+                JSONObject match = matchesArray.getJSONObject(i);
+
+                int matchId = match.getInt("id");
+                String date = match.getString("date_start");
+                String stadion = match.getString("venue");
+                String competition = match.getString("competition");
+
+                JSONObject homeTeamObject = match.getJSONObject("home_team");
+                JSONObject awayTeamObject = match.getJSONObject("away_team");
+
+                String homeTeamName = homeTeamObject.getString("name");
+                Integer homeTeamId = homeTeamObject.getInt("id");
+                int homeTeamLogo = getResources().getIdentifier(homeTeamName.replaceAll(" ", "_").replaceAll("'", "").toLowerCase(), "drawable", getApplication().getPackageName());
+
+
+                String awayTeamName = awayTeamObject.getString("name");
+                Integer awayTeamId = awayTeamObject.getInt("id");
+                int awayTeamLogo = getResources().getIdentifier(awayTeamName.replaceAll(" ", "_").replaceAll("'", "").toLowerCase(), "drawable", getApplication().getPackageName());
+
+
+                Team homeTeam = new Team(homeTeamName, homeTeamLogo, homeTeamId);
+                Team awayTeam = new Team(awayTeamName, awayTeamLogo, awayTeamId);
+
+                if (!matchIdList.contains(matchId)) {
+                    matchIdList.add(matchId);
+                    matches.add(new Match(homeTeam, awayTeam, date, stadion, competition));
+                }
+                
+                Collections.sort(matches);
+                adapter.notifyItemInserted(matches.size()-1);
+
+            }
+        } catch (JSONException e) {
+
+        }
+
+    }
+
+    private void updateFootballMatches(String url) {
+        new FootballStreamTask(this, url).execute();
+    }
+
 
     @Override
     protected void onStart() {
         super.onStart();
-        TextView text = (TextView)findViewById(R.id.text);
-        text.setText("Get matches with id: " + PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("TEAMS", ""));
 
-        matches.add(new Match(new Team("Ajax", R.drawable.ajax, 1), new Team("Feyenoord", R.drawable.feyenoord, 2), "14-05-2016", "De Kuip", "Eredivisie"));
-        adapter.notifyItemInserted(matches.size()-1);
+        String followedTeams = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("TEAMS", "");
+        List<String> followedTeamsList;
+        if (followedTeams.length() == 0) {
+            followedTeamsList = new ArrayList<String>();
+        } else {
+            followedTeamsList = new ArrayList<String>(Arrays.asList(followedTeams.split(",")));
+        }
+
+        Log.d("teams", followedTeams.toString());
+
+        matches.clear();
+        updateFootballMatches("/matches?team_id=" + TextUtils.join(",", followedTeamsList));
+
+
     }
 
     @Override

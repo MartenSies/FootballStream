@@ -52,39 +52,67 @@ public class TeamAdapter extends RecyclerView.Adapter<TeamAdapter.TeamViewHolder
             cv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    savedTeams  = PreferenceManager.getDefaultSharedPreferences(view.getContext()).getString("TEAMS", "");
-                    if (savedTeams.length() == 0) {
-                        savedTeamsList = new ArrayList<String>();
-                    } else {
-                        savedTeamsList = new ArrayList<String>(Arrays.asList(savedTeams.split(",")));
-                    }
-
                     if (teamCheckbox.isChecked()) {
-                        Log.d("test", "checked");
-                        List<String> newList = new ArrayList<String>();
-                        String idToRemove = teamCheckbox.getTag().toString();
-
-                        for (int i = 0; i < savedTeamsList.size(); i++ ) {
-                            String listId = savedTeamsList.get(i);
-                            if (!idToRemove.equals(listId)) {
-                                newList.add(listId);
-                            }
-                        }
-
-                        savedTeamsList = newList;
-                        teamCheckbox.setChecked(false);
-                        Log.d("saved_teams", savedTeamsList.toString());
+                        removeMatch();
                     } else {
-                        savedTeamsList.add(teamCheckbox.getTag().toString());
-                        teamCheckbox.setChecked(true);
-                        Log.d("saved_teams", savedTeamsList.toString());
+                        addMatch();
                     }
-                    savedTeams = TextUtils.join(",", savedTeamsList);
-                    Log.d("Saved_Teams", savedTeams);
-                    PreferenceManager.getDefaultSharedPreferences(view.getContext()).edit().putString("TEAMS", savedTeams).commit();
+                }
+            });
+
+            teamCheckbox.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (teamCheckbox.isChecked()) {
+                        addMatch();
+                    } else {
+                        removeMatch();
+                    }
                 }
             });
         }
+
+        public void addMatch() {
+            savedTeams  = PreferenceManager.getDefaultSharedPreferences(itemView.getContext()).getString("TEAMS", "");
+            if (savedTeams.length() == 0) {
+                savedTeamsList = new ArrayList<String>();
+            } else {
+                savedTeamsList = new ArrayList<String>(Arrays.asList(savedTeams.split(",")));
+            }
+
+            savedTeamsList.add(teamCheckbox.getTag().toString());
+            teamCheckbox.setChecked(true);
+
+            savedTeams = TextUtils.join(",", savedTeamsList);
+            PreferenceManager.getDefaultSharedPreferences(itemView.getContext()).edit().putString("TEAMS", savedTeams).commit();
+        }
+
+        public  void removeMatch() {
+            savedTeams  = PreferenceManager.getDefaultSharedPreferences(itemView.getContext()).getString("TEAMS", "");
+            if (savedTeams.length() == 0) {
+                savedTeamsList = new ArrayList<String>();
+            } else {
+                savedTeamsList = new ArrayList<String>(Arrays.asList(savedTeams.split(",")));
+            }
+
+            List<String> newList = new ArrayList<String>();
+            String idToRemove = teamCheckbox.getTag().toString();
+
+            for (int i = 0; i < savedTeamsList.size(); i++ ) {
+                String listId = savedTeamsList.get(i);
+                if (!idToRemove.equals(listId)) {
+                    newList.add(listId);
+                }
+            }
+
+            savedTeamsList = newList;
+            teamCheckbox.setChecked(false);
+
+            savedTeams = TextUtils.join(",", savedTeamsList);
+            PreferenceManager.getDefaultSharedPreferences(itemView.getContext()).edit().putString("TEAMS", savedTeams).commit();
+        }
+
+
     }
 
     private Context context;

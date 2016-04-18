@@ -3,6 +3,20 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
-    <color name="colorEredivisie">#f9a666</color>
-    <color name="colorPremierLeague">#f96e66</color>
+
+    <color name="black">#000000</color>
+    <color name="white">#ffffff</color>
+
+    <color name="castActive">#DEDEDE</color>
+    <color name="castNotActive">#ffffff</color>
+
+
+    <color name="colorEredivisie">#FF8000</color>
+    <color name="colorPremierLeague">#0080FF</color>
+    <color name="colorLigue1">#8000FF</color>
+    <color name="colorPrimeraDivision">#FF0080</color>
+    <color name="colorPrimeiraLiga">#00FF40</color>
+    <color name="colorBundesliga">#FF0000</color>
+    <color name="colorSerieA">#0000FF</color>
+
 </resources>

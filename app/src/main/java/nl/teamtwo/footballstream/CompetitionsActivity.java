@@ -1,6 +1,7 @@
 package nl.teamtwo.footballstream;
 
 import android.content.Intent;
+import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -13,11 +14,15 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import com.github.pierry.simpletoast.SimpleToast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,7 +48,7 @@ public class CompetitionsActivity extends AppCompatActivity implements DataInter
      */
     private ViewPager mViewPager;
     private List<Integer> blackList = Arrays.asList(1005, 1007, 1198);
-
+    private String savedTeams;
     private JSONObject competitions;
 
     @Override
@@ -59,6 +64,8 @@ public class CompetitionsActivity extends AppCompatActivity implements DataInter
 
         //Get football competitions
         updateFootballCompetitions();
+
+        savedTeams = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("TEAMS", "");
     }
 
     private void updateFootballCompetitions() {
@@ -117,6 +124,10 @@ public class CompetitionsActivity extends AppCompatActivity implements DataInter
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        String newTeams = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("TEAMS", "");
+        if (!savedTeams.equals(newTeams)) {
+            SimpleToast.info(getApplicationContext(), "Saved Competitions", "{fa-check}");
+        }
         startActivity(new Intent(this, HomeActivity.class));
         return super.onOptionsItemSelected(item);
     }
@@ -165,7 +176,7 @@ public class CompetitionsActivity extends AppCompatActivity implements DataInter
                     int logo = getResources().getIdentifier(name.replaceAll(" ", "_").replaceAll("'", "").toLowerCase(), "drawable", getActivity().getPackageName());
 
                     teams.add(new Team(name, logo, id));
-                    adapter.notifyItemInserted(teams.size()-1);
+                    adapter.notifyDataSetChanged();
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -182,10 +193,6 @@ public class CompetitionsActivity extends AppCompatActivity implements DataInter
 
             return rootView;
         }
-
-
-
-
     }
 
     /**

@@ -8,7 +8,7 @@
     <string name="title_activity_leagues">Leagues</string>
     <string name="section_format">Hello World from section: %1$d</string>
 
-    <string name="app_id">YOUR_APP_ID</string>
+    <string name="app_id">0BA49D90</string>
     <string name="namespace">urn:x-cast:nl.footballstream</string>
 
     <string name="message_to_cast">Message to Cast&#8230;</string>

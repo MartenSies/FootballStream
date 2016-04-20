@@ -80,14 +80,15 @@ public class HomeActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
+//        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+//        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+//                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+//        drawer.setDrawerListener(toggle);
+//        toggle.syncState();
+//
+//        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+//        navigationView.setNavigationItemSelectedListener(this);
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
 
         RecyclerView rv = (RecyclerView)findViewById(R.id.rv);
         rv.setHasFixedSize(true);
@@ -200,28 +201,31 @@ public class HomeActivity extends AppCompatActivity
                 @Override
                 public void onClick(View view) {
                     if (isConnected()) {
-                        SimpleToast.error(getApplicationContext(), "Disconnect from chromecast first.");
+                        SimpleToast.error(getApplicationContext(), "Disconnect chromecast first.");
                     } else {
                         startActivity(new Intent(HomeActivity.this, CompetitionsActivity.class));
                     }
                 }
             });
 
+        refreshMatches();
 
-        Log.d("connected", Boolean.toString(isConnected()));
+    }
 
+    private void refreshMatches() {
         // Load matches
         String followedTeams = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("TEAMS", "");
         List<String> followedTeamsList;
         if (followedTeams.length() == 0) {
-            followedTeamsList = new ArrayList<String>();
+            followedTeamsList = new ArrayList<>();
         } else {
-            followedTeamsList = new ArrayList<String>(Arrays.asList(followedTeams.split(",")));
+            followedTeamsList = new ArrayList<>(Arrays.asList(followedTeams.split(",")));
         }
 
         matches.clear();
-        updateFootballMatches("/matches?team_id=" + TextUtils.join(",", followedTeamsList));
-
+        if (followedTeamsList.size() > 0) {
+            updateFootballMatches("/matches?team_id=" + TextUtils.join(",", followedTeamsList));
+        }
     }
 
     @Override
@@ -254,7 +258,6 @@ public class HomeActivity extends AppCompatActivity
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.home, menu);
 
-        Log.d("TEST", menu.toString());
         MenuItem mediaRouteMenuItem = menu.findItem(R.id.media_route_menu_item);
 
         MediaRouteActionProvider mediaRouteActionProvider = (MediaRouteActionProvider) MenuItemCompat.getActionProvider(mediaRouteMenuItem);
@@ -274,6 +277,10 @@ public class HomeActivity extends AppCompatActivity
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        } else if (id == R.id.clear) {
+            PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putString("MATCHES", "").commit();
+            refreshMatches();
+            SimpleToast.ok(getApplicationContext(), "Matches cleared", "{fa-thumbs-up}");
         }
 
         return super.onOptionsItemSelected(item);
@@ -525,7 +532,7 @@ public class HomeActivity extends AppCompatActivity
                 Log.e(TAG, "Exception while sending matches", e);
             }
         } else {
-            Toast.makeText(HomeActivity.this, message, Toast.LENGTH_SHORT).show();
+//            Toast.makeText(HomeActivity.this, message, Toast.LENGTH_SHORT).show();
         }
     }
 

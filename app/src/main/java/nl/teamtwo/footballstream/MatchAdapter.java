@@ -77,8 +77,6 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.MatchViewHol
             competitionLabel = (TextView) itemView.findViewById(R.id.competitionLabel);
             final HomeActivity homeActivity = ha;
 
-//            PreferenceManager.getDefaultSharedPreferences(itemView.getContext()).edit().putString("MATCHES", "").commit();
-
             cv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -200,6 +198,15 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.MatchViewHol
                 break;
             case "Italy - Serie A":
                 color = ContextCompat.getColor(context, R.color.colorSerieA);
+                break;
+            case "England - Fa Cup":
+                color = ContextCompat.getColor(context, R.color.colorFACup);
+                break;
+            case "International - Champions League":
+                color = ContextCompat.getColor(context, R.color.colorChampionsLeague);
+                break;
+            case "International - Europa League":
+                color = ContextCompat.getColor(context, R.color.colorEuropaLeague);
                 break;
             default:
                 color = 0;

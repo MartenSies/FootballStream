@@ -10,7 +10,6 @@
     <color name="castActive">#DEDEDE</color>
     <color name="castNotActive">#ffffff</color>
 
-
     <color name="colorEredivisie">#FF8000</color>
     <color name="colorPremierLeague">#0080FF</color>
     <color name="colorLigue1">#8000FF</color>
@@ -18,5 +17,8 @@
     <color name="colorPrimeiraLiga">#00FF40</color>
     <color name="colorBundesliga">#FF0000</color>
     <color name="colorSerieA">#0000FF</color>
+    <color name="colorFACup">#006699</color>
+    <color name="colorChampionsLeague">#FFD700</color>
+    <color name="colorEuropaLeague">#CC6633</color>
 
 </resources>

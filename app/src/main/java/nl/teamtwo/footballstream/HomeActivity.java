@@ -280,6 +280,7 @@ public class HomeActivity extends AppCompatActivity
         } else if (id == R.id.clear) {
             PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putString("MATCHES", "").commit();
             refreshMatches();
+            sendMatchesToChromecast();
             SimpleToast.ok(getApplicationContext(), "Matches cleared", "{fa-thumbs-up}");
         }
 

@@ -173,7 +173,7 @@ public class CompetitionsActivity extends AppCompatActivity implements DataInter
 
                     int id = (Integer) team.get("id");
                     String name = team.get("name").toString();
-                    int logo = getResources().getIdentifier(name.replaceAll(" ", "_").replaceAll("'", "").toLowerCase(), "drawable", getActivity().getPackageName());
+                    int logo = getResources().getIdentifier(name.replaceAll(" ", "_").replaceAll("'", "").replaceAll("-", "_").toLowerCase(), "drawable", getActivity().getPackageName());
 
                     teams.add(new Team(name, logo, id));
                     adapter.notifyDataSetChanged();

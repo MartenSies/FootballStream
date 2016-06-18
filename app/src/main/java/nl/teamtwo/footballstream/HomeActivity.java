@@ -1,6 +1,7 @@
 package nl.teamtwo.footballstream;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
@@ -38,7 +39,21 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.SocketTimeoutException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -116,6 +131,21 @@ public class HomeActivity extends AppCompatActivity
 
         sendMessage(savedMatches);
         Log.d("Saved Matches", savedMatches);
+    }
+
+    public void sendMatchesToPi() {
+        String savedMatches = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("MATCHES", "");
+        if (savedMatches.length() == 0){
+            savedMatches = "-";
+        }
+
+        try {
+            String data = URLEncoder.encode("match_ids", "UTF-8")
+                    + "=" + URLEncoder.encode(savedMatches, "UTF-8");
+            new PostTask().execute(data);
+        } catch (Exception ex){
+            System.out.println(ex);
+        }
     }
 
     @Override
@@ -282,6 +312,8 @@ public class HomeActivity extends AppCompatActivity
             refreshMatches();
             sendMatchesToChromecast();
             SimpleToast.ok(getApplicationContext(), "Matches cleared", "{fa-thumbs-up}");
+        } else if (id == R.id.sounds){
+            sendMatchesToPi();
         }
 
         return super.onOptionsItemSelected(item);
@@ -558,5 +590,47 @@ public class HomeActivity extends AppCompatActivity
             Log.d(TAG, "We're sending your matches");
         }
 
+    }
+
+    private class PostTask extends AsyncTask<String, String, String> {
+        @Override
+        protected String doInBackground(String... data) {
+
+            try {
+                URL url = new URL("http://devthisapi.jordibeen.nl/api/v1/matches");
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("POST");
+
+                conn.setUseCaches(false);
+                conn.setDoInput(true);
+                conn.setDoOutput(true);
+
+                //Send request
+                DataOutputStream wr = new DataOutputStream(
+                        conn.getOutputStream());
+                wr.writeBytes(data[0]);
+
+                wr.flush();
+                wr.close();
+
+                //Get Response
+                InputStream is = conn.getInputStream();
+                BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+
+                String line;
+                StringBuffer sb = new StringBuffer();
+                int chr;
+                while ((chr = is.read()) != -1) {
+                    sb.append((char) chr);
+                }
+                line = sb.toString();
+                Log.d("Request result", line);
+                rd.close();
+            } catch (Exception ex) {
+                System.out.println(ex);
+            }
+
+            return "Complete";
+        }
     }
 }
